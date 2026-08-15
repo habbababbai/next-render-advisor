@@ -45,6 +45,34 @@ Guidance for Claude working on this repository.
 vitest run --coverage  # Check coverage
 ```
 
+## Review criteria
+
+Used by `/code-review` locally and by the on-demand fallback reviewer
+(`.github/workflows/claude-review-fallback.yml` dispatches,
+`claude-review-run.yml` does the actual review).
+CI already covers lint, tests, and coverage — don't re-report those.
+
+**Blocking.** Any of these gets `--request-changes`:
+
+- Breaks one of the hard invariants above. Purity of `rules.ts` and the
+  `'unknown'`-is-not-falsy rule are the two most likely to be violated silently.
+- Changes an asymmetric default (component → `'client'`, route → `'dynamic'`)
+  without the PR explicitly saying it's doing so.
+- Changes classification behavior with no matching case added to
+  `packages/core/test/rules.test.ts`, or drops a branch below 100% coverage.
+- Merges component and route logic, or makes a field in one depend on the other.
+- Adds Pages Router branching to `rules.ts`.
+- Adds npm publish steps or CI publish automation (invariant 6).
+
+**Non-blocking.** Mention at most briefly, never block on:
+
+- Formatting, naming, and import order — Prettier and ESLint own these.
+- Speculative abstraction for planned-but-unbuilt work (`wizard.ts`, `scanner.ts`).
+- Test style preferences, as long as the branches are covered.
+
+**Verification bar.** Cite `file:line` for behavior claims. Don't infer what a
+function does from its name — read it.
+
 ## Claude Code Setup
 
 MCP servers available to you in this project:
