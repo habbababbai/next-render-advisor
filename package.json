@@ -12,7 +12,7 @@
     "test": "pnpm -r test --passWithNoTests",
     "test:coverage": "pnpm -r test --coverage --passWithNoTests",
     "format": "prettier --write \"packages/*/src/**/*.ts\" \"packages/*/test/**/*.ts\"",
-    "lint": "eslint packages/*/src packages/*/test"
+    "lint": "eslint --no-error-on-unmatched-pattern packages/*/src packages/*/test"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
