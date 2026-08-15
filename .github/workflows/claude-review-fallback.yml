@@ -1,0 +1,61 @@
+name: Claude Review (fallback)
+
+# On-demand backup reviewer for when CodeRabbit is queued or out of quota.
+# Comment `/claude-review` on a PR to trigger it. Costs nothing until summoned.
+#
+# Split into two workflows so the privileged half (secrets, checkout of PR
+# code) never runs directly off an issue_comment trigger: CodeQL's
+# untrusted-checkout queries flag any checkout of a PR head inside a
+# privileged event (issue_comment, pull_request_target, workflow_run) as a
+# risk regardless of authorization gates in `if:` — their own docs list
+# exactly those three triggers as "privileged." workflow_dispatch isn't one
+# of them, and it's already gated by GitHub itself (requires actions:write on
+# the repo to invoke), so this workflow validates the trigger and hands off a
+# SHA-pinned commit to review; claude-review-run.yml does the actual checkout
+# and Claude run.
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  pull-requests: read
+  actions: write
+
+jobs:
+  dispatch:
+    name: dispatch
+    # Trusted commenters only: even though the privileged checkout now lives
+    # in a separate, non-privileged-triggered workflow, there's no reason to
+    # let a fork PR spend Claude Code quota by spamming this comment either.
+    if: >
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/claude-review') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve PR head SHA and dispatch review
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          pr=${{ github.event.issue.number }}
+
+          state=$(gh pr view "$pr" --json state --jq '.state')
+          if [ "$state" != "OPEN" ]; then
+            echo "PR #$pr is not open ($state); skipping." >&2
+            exit 0
+          fi
+
+          # Resolved once, here, and passed as a plain string input — immutable
+          # for the rest of the flow, so there's no window between this check
+          # and the eventual checkout for the ref to be swapped out (TOCTOU).
+          sha=$(gh pr view "$pr" --json headRefOid --jq '.headRefOid')
+
+          # --ref main pins which copy of claude-review-run.yml (and its
+          # declared inputs) runs: always the trusted main-branch definition,
+          # never anything the PR branch itself could have modified.
+          gh workflow run claude-review-run.yml \
+            --ref main \
+            -f pr_number="$pr" \
+            -f head_sha="$sha"
