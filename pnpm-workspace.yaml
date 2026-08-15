@@ -1,6 +1,10 @@
 packages:
   - 'packages/*'
 # tsup depends on esbuild's postinstall build step; allowlist it so pnpm
-# runs the script without prompting for approval on every install.
+# runs the script without prompting for approval on every install. pnpm 11
+# renamed/moved this from onlyBuiltDependencies to allowBuilds — keeping
+# both since older pnpm majors only understand onlyBuiltDependencies.
 onlyBuiltDependencies:
   - esbuild
+allowBuilds:
+  esbuild: true

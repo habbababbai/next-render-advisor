@@ -9,22 +9,25 @@
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r --filter next-render-advisor dev",
-    "test": "pnpm -r test",
-    "test:coverage": "pnpm -r test -- --coverage",
+    "test": "pnpm -r test --passWithNoTests",
+    "test:coverage": "pnpm -r test --coverage --passWithNoTests",
     "format": "prettier --write \"packages/*/src/**/*.ts\" \"packages/*/test/**/*.ts\"",
     "lint": "eslint packages/*/src packages/*/test"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
     "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^10.8.1",
+    "globals": "^17.11.0",
     "husky": "^9.1.7",
     "prettier": "^3.0.0",
     "tsup": "^8.0.0",
     "tsx": "^4.0.0",
-    "typescript": "^7.0.2",
+    "typescript": "~6.0.3",
+    "vite": "^7.3.6",
     "vitest": "^4.1.10"
   },
   "engines": {
