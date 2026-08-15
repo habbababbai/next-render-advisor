@@ -47,7 +47,9 @@ vitest run --coverage  # Check coverage
 
 ## Review criteria
 
-Used by `/code-review` locally and by `.github/workflows/claude-review-fallback.yml`.
+Used by `/code-review` locally and by the on-demand fallback reviewer
+(`.github/workflows/claude-review-fallback.yml` dispatches,
+`claude-review-run.yml` does the actual review).
 CI already covers lint, tests, and coverage — don't re-report those.
 
 **Blocking.** Any of these gets `--request-changes`:
