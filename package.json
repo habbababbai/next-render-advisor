@@ -1,0 +1,33 @@
+{
+  "name": "next-render-advisor",
+  "version": "0.1.0",
+  "description": "CLI that recommends Server vs Client Component and Static vs ISR vs Dynamic generation for Next.js App Router projects",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --filter next-render-advisor dev",
+    "test": "pnpm -r test",
+    "test:coverage": "pnpm -r test -- --coverage",
+    "format": "prettier --write \"packages/*/src/**/*.ts\" \"packages/*/test/**/*.ts\"",
+    "lint": "eslint packages/*/src packages/*/test"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "eslint": "^8.0.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

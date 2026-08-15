@@ -1,0 +1,35 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+  },
+  "overrides": [
+    {
+      "files": ["**/rules.ts"],
+      "rules": {
+        "no-console": "error",
+        "no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              "fs", "fs/*", "path", "http", "https", "net", "child_process",
+              "next", "next/*", "react", "react-dom", "react/*", "react-dom/*"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "ignorePatterns": ["dist", "coverage", "node_modules"]
+}

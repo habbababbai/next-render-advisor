@@ -1,4 +1,4 @@
-# next-render-strategy
+# next-render-advisor
 
 Helps Next.js **App Router** developers decide whether a component should be a
 **Server Component** or a **Client Component**, and whether a route should be
@@ -11,9 +11,8 @@ Two moments where this decision gets made badly:
 
 1. **Writing a new component.** No existing tool helps here — you either default
    to `'use client'` out of habit, or guess.
-2. **Auditing existing code.** Tools exist, but shallower than they look — see
-   [PLAN.md](./PLAN.md#research-notes-checked-before-committing-to-build-our-own-rules)
-   for what was actually found inspecting their source.
+2. **Auditing existing code.** Tools exist, but shallower than they look — existing
+   solutions don't catch all the cases or surface contradictions.
 
 Both moments should be answered by the same rule logic, so the tool never
 contradicts itself between "here's what I'd build" and "here's what's wrong with
@@ -25,10 +24,10 @@ Early and in active development. What's real today vs. planned:
 
 | Piece | Status |
 |---|---|
-| Classification core (`classifyComponent`, `classifyRoute`) | ✅ Implemented, 100% branch coverage — [`src/rules.ts`](./src/rules.ts) |
-| Interactive wizard (Normal / Dummy mode) | 🚧 Designed, not yet implemented — [QUESTIONS.md](./QUESTIONS.md) |
-| CLI (`nra` / `next-render-strategy`) | 🚧 Not yet implemented |
-| Repo scanner | 📋 Planned, deferred to Phase 2 — [PLAN.md](./PLAN.md#phase-2--repo-scanner-deferred) |
+| Classification core (`classifyComponent`, `classifyRoute`) | ✅ Implemented, 100% branch coverage — [`packages/core/src/rules.ts`](./packages/core/src/rules.ts) |
+| Interactive wizard (Normal / Dummy mode) | 🚧 Not yet implemented |
+| CLI (`nra` / `next-render-advisor`) | 🚧 Not yet implemented |
+| Repo scanner | 📋 Planned, Phase 2 |
 | Published to npm | Not yet — local development only |
 
 ## The idea, briefly
@@ -47,39 +46,76 @@ guessed:
   defaults to "dynamic" (guessing static wrong risks serving stale or leaked
   per-user content).
 
-Full rationale, including what was learned inspecting existing tools' actual
-source, lives in [PLAN.md](./PLAN.md).
-
 ## Development
 
-Requires Node ≥ 18.
+Requires Node ≥ 18 and pnpm.
 
 ```bash
 git clone <repo-url>
-cd next-render-strategy
-npm install
-npm test
+cd next-render-advisor
+pnpm install
+pnpm test
 ```
 
-`npm test` is expected to run `vitest run`; `npm run test:coverage` should run
-`vitest run --coverage`. `src/rules.ts` is held to 100% branch coverage — see
-[CONTRIBUTING.md](./CONTRIBUTING.md) before touching it.
+`pnpm test` runs `vitest run`; `pnpm test:coverage` runs `vitest run --coverage`. 
+`packages/core/src/rules.ts` is held to 100% branch coverage.
+
+**Before contributing:** Read [CLAUDE.md](./CLAUDE.md) for project invariants,
+testing requirements, and working style.
+
+### Claude Code Setup (Optional)
+
+If you use Claude Code, this project is pre-configured with MCP servers in
+`.claude/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "/opt/homebrew/bin/mcp-server-github",
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+The GitHub MCP server reads its token from the `GITHUB_PERSONAL_ACCESS_TOKEN`
+environment variable — it does **not** reuse `gh`'s stored credentials, so it
+needs its own token even if you're already logged in with `gh auth login`.
+
+**One-time setup:**
+
+1. Create a token at
+   [github.com/settings/tokens](https://github.com/settings/tokens) (a
+   fine-grained token scoped to this repo with **Pull requests** and
+   **Issues: Read** is enough; classic tokens need the `repo` scope for
+   private repos).
+2. Add it to your zsh config so it's available in every shell:
+
+   ```bash
+   echo 'export GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+
+3. Restart Claude Code (or open a new terminal) so it picks up the env var.
+   Claude Code will prompt to approve the MCP server on first use:
+   - GitHub MCP (search repos, manage issues/PRs)
+
+No additional setup needed beyond that.
 
 ## Project structure
 
 ```
-src/rules.ts         pure classification core (done)
-test/rules.test.ts   table-driven tests (done)
-PLAN.md               full design rationale
-CHECKLIST.md          build order / what's done vs pending
-QUESTIONS.md          wizard question bank (Normal vs Dummy mode)
+packages/core/src/rules.ts        pure classification core — decision logic (done)
+packages/core/test/rules.test.ts  100% branch coverage tests (done)
+packages/cli/src/cli.ts           command-line interface (planned)
+wizard.ts                         interactive Q&A wizard (planned, package TBD)
+scanner.ts                        AST-based code audit (planned, Phase 2, package TBD)
 ```
 
-Not yet built: `src/wizard.ts`, `src/format.ts`, `src/cli.ts`.
-
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+See [CLAUDE.md](./CLAUDE.md) for architecture details and invariants.
 
 ## License
 
