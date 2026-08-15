@@ -37,6 +37,11 @@ jobs:
       - name: Resolve PR head SHA and dispatch review
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # gh normally infers the target repo from the local git remote, but
+          # this job intentionally never runs actions/checkout (see header
+          # comment), so there's no git repo to infer from — without this,
+          # every `gh` call below fails with "not a git repository".
+          GH_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           pr=${{ github.event.issue.number }}
