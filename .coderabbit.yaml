@@ -1,0 +1,59 @@
+language: en-US
+
+reviews:
+  profile: chill
+  # Core of what you asked for: once every comment CodeRabbit raised on a PR
+  # is addressed (fixed in a later commit, or you reply/discuss it away) AND
+  # all required checks (CI) are green, CodeRabbit submits its own Approve
+  # review automatically. No manual "@coderabbitai approve" needed.
+  # request_changes_workflow alone only gates the *workflow state* (blocks
+  # merge on protected branches until its own comments are resolved) — it
+  # does NOT by itself submit the approval. auto_approve is what actually
+  # makes CodeRabbit post an Approve review once nothing's outstanding.
+  request_changes_workflow: true
+  auto_approve: true
+
+  auto_review:
+    enabled: true
+    drafts: false          # skip draft PRs until marked ready
+    base_branches:
+      - main
+
+  # Use the PR description and any linked GitHub issue as review context,
+  # not just the diff — so feedback checks whether the change actually
+  # satisfies what the PR/issue says it's supposed to do.
+  assess_linked_issues: true
+  related_issues: true
+  related_prs: true
+
+  path_instructions:
+    - path: "**/*"
+      instructions: >
+        Before reviewing, read the PR description and any issue it links
+        (e.g. "Closes #N", "Fixes #N") to understand the intent and
+        acceptance criteria behind the change. Judge whether the diff
+        actually satisfies that intent, not just whether it's clean code —
+        call out scope creep or changes that don't match what the PR
+        description says it does.
+
+    - path: "packages/core/src/rules.ts"
+      instructions: >
+        This file must stay pure per CLAUDE.md: no I/O, no console.*, no Node
+        built-ins (fs, path, http, etc.), no framework imports (Next.js, React).
+        Flag any violation as a blocking issue. classifyComponent() and
+        classifyRoute() must stay separate — never merge them or let one read
+        the other's input type. Signal ('yes' | 'no' | 'unknown') must never be
+        coerced to boolean or treated as falsy. Uncertainty defaults are
+        intentional: unresolved component -> 'client', unresolved route ->
+        'dynamic' — don't suggest "fixing" these to be symmetric. Any change
+        here requires accompanying tests in packages/core/test/rules.test.ts
+        with 100% branch coverage, including 'unknown' Signal cases — flag
+        the PR if it touches this file without matching test changes.
+
+    - path: "packages/core/test/rules.test.ts"
+      instructions: >
+        Any change to rules.ts requires accompanying tests here with 100%
+        branch coverage, including 'unknown' Signal cases. Flag PRs that touch
+        rules.ts without corresponding test coverage changes.
+
+  high_level_summary: true
