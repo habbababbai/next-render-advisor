@@ -1,4 +1,6 @@
 packages:
   - 'packages/*'
-allowBuilds:
-  esbuild: set this to true or false
+# tsup depends on esbuild's postinstall build step; allowlist it so pnpm
+# runs the script without prompting for approval on every install.
+onlyBuiltDependencies:
+  - esbuild
