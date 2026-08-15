@@ -18,8 +18,9 @@ manual steps that make the intended flow actually work in practice.
 5. Once everything's addressed, comment `@coderabbitai review` **once**.
    It checks all previously-raised comments against the current state.
 6. If nothing's outstanding and CI is green, `request_changes_workflow`
-   makes CodeRabbit auto-approve. No manual `@coderabbitai approve` exists
-   or is needed.
+   makes CodeRabbit auto-approve as a side effect of that review run. You
+   can also trigger approval explicitly with `@coderabbitai approve`
+   instead of waiting on a review run — see below.
 
 **Only you trigger CodeRabbit commands on PRs** (`@coderabbitai review`,
 `full review`, `pause`, etc.) — not Claude, not any other automation.
@@ -30,11 +31,9 @@ manual steps that make the intended flow actually work in practice.
 |---|---|
 | `@coderabbitai review` | Default choice once you're done addressing comments. Incremental — only re-checks what changed + prior comments. Cheap. |
 | `@coderabbitai full review` | Fallback if `review` is rate-limited (see below), or if you want a from-scratch pass ignoring prior comments. More expensive. |
+| `@coderabbitai approve` | Resolves all unresolved CodeRabbit threads and attempts to submit CodeRabbit's own approval directly, skipping a review run. Only actually approves because `request_changes_workflow: true` is set here — without that key it would just resolve threads and report approval as disabled. Post as a new top-level PR comment, not inside a thread. |
+| `@coderabbitai resolve` | Marks all CodeRabbit review comments resolved without approving. Rarely needed — normal fix-and-push already gets threads auto-resolved (step 3 above); use this only to bulk-dismiss comments you've decided not to act on. |
 | `@coderabbitai pause` / `resume` | Halts/restores CodeRabbit's own automatic behavior. Doesn't affect the `review`/`full review` rate limit — see below. |
-
-There is no `@coderabbitai approve` command. Approval only happens as a side
-effect of a review run finding nothing outstanding, via
-`request_changes_workflow: true`.
 
 ## Known quirks (not config-fixable, just know about them)
 
@@ -57,11 +56,18 @@ effect of a review run finding nothing outstanding, via
   merging with everything fixed/resolved but CodeRabbit hasn't re-reviewed
   yet (e.g. you're rate-limited), the reliable unblock that doesn't depend
   on CodeRabbit at all is to **dismiss the stale review** yourself: PR →
-  reviewers panel → "..." on CodeRabbit's review → Dismiss review. This
-  repo's merge rules (`gh api repos/OWNER/REPO/rulesets`) don't actually
-  require an approval count (`required_approving_review_count: 0`) — the
-  block is purely GitHub's default behavior of disabling merge while any
-  review says "changes requested," regardless of rule config.
+  reviewers panel → "..." on CodeRabbit's review → Dismiss review. Note this
+  block is GitHub's default behavior of disabling merge while any review
+  says "changes requested" — separate from, and in addition to, this repo's
+  ruleset (`gh api repos/OWNER/REPO/rulesets`) which requires
+  `required_approving_review_count: 1`.
+- **CodeRabbit can't be named as the required approver.** GitHub's ruleset
+  `required_reviewers` field only accepts Teams, not bots — and CodeRabbit
+  isn't a repo collaborator, so CODEOWNERS can't target it either. The
+  `required_approving_review_count: 1` rule plus the auto-approve behavior
+  above is the practical substitute: it can't literally be satisfied by a
+  self-approval (GitHub doesn't allow that), and in practice it's CodeRabbit
+  approving your own PRs and you approving everyone else's (e.g. Dependabot).
 
 ## Config keys in play (`.coderabbit.yaml`)
 

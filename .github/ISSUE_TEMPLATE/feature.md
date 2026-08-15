@@ -1,10 +1,12 @@
 ---
 name: Feature or Milestone
 about: Propose a new feature or track a development milestone
-title: "[scope] Brief description"
-labels: ["scope/", "status/planning"]
+title: "[Phase N] Milestone Name — Subject"
+labels: []
 assignees: []
 ---
+
+<!-- Apply the full label set before saving: scope/*, phase-N, milestone-N, type/* — see docs/ISSUES.md#labels -->
 
 ## Overview
 <!-- One or two sentences: what does this accomplish and why does it matter? -->
