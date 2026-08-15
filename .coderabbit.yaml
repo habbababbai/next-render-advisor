@@ -5,13 +5,11 @@ reviews:
   # Core of what you asked for: once every comment CodeRabbit raised on a PR
   # is addressed (fixed in a later commit, or you reply/discuss it away) AND
   # all required checks (CI) are green, CodeRabbit submits its own Approve
-  # review automatically. No manual "@coderabbitai approve" needed.
-  # request_changes_workflow alone only gates the *workflow state* (blocks
-  # merge on protected branches until its own comments are resolved) — it
-  # does NOT by itself submit the approval. auto_approve is what actually
-  # makes CodeRabbit post an Approve review once nothing's outstanding.
+  # review automatically. No manual "@coderabbitai approve" needed. This is
+  # the only key that does this — there is no separate "auto_approve" key
+  # in CodeRabbit's schema (verified against the published schema; an
+  # earlier version of this file had one and it was silently a no-op).
   request_changes_workflow: true
-  auto_approve: true
 
   auto_review:
     enabled: true
