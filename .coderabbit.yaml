@@ -1,5 +1,9 @@
 language: en-US
 
+# See .github/CODERABBIT.md for the intended review/approval flow, the exact
+# trigger commands to use, and known platform quirks (rate limits, low-star
+# review gating) this config can't control.
+
 reviews:
   profile: chill
   # Core of what you asked for: once every comment CodeRabbit raised on a PR
