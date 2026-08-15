@@ -1,8 +1,10 @@
 # Dependencies
 node_modules/
+# package-lock.json/yarn.lock excluded — this repo standardizes on pnpm.
+# pnpm-lock.yaml is intentionally NOT ignored: CI relies on it for
+# `pnpm install --frozen-lockfile`.
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
 
 # Build output
 dist/
