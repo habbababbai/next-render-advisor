@@ -65,18 +65,46 @@ testing requirements, and working style.
 
 ### Claude Code Setup (Optional)
 
-If you use Claude Code, this project is pre-configured with MCP servers:
+If you use Claude Code, this project is pre-configured with MCP servers in
+`.claude/settings.json`:
 
-```bash
-# Required: GitHub CLI authentication (for GitHub MCP)
-gh auth login  # One-time setup
-
-# Claude Code will prompt to approve MCP servers on first use:
-# - GitHub MCP (search repos, manage issues/PRs)
-# - npm MCP (search packages, manage dependencies)
+```json
+{
+  "mcpServers": {
+    "github": {
+      "command": "/opt/homebrew/bin/mcp-server-github",
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
 ```
 
-MCP configuration is in `.claude/settings.json`. No additional setup needed beyond `gh auth login`.
+The GitHub MCP server reads its token from the `GITHUB_PERSONAL_ACCESS_TOKEN`
+environment variable — it does **not** reuse `gh`'s stored credentials, so it
+needs its own token even if you're already logged in with `gh auth login`.
+
+**One-time setup:**
+
+1. Create a token at
+   [github.com/settings/tokens](https://github.com/settings/tokens) (a
+   fine-grained token scoped to this repo with **Pull requests** and
+   **Issues: Read** is enough; classic tokens need the `repo` scope for
+   private repos).
+2. Add it to your zsh config so it's available in every shell:
+
+   ```bash
+   echo 'export GITHUB_PERSONAL_ACCESS_TOKEN="ghp_your_token_here"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+
+3. Restart Claude Code (or open a new terminal) so it picks up the env var.
+   Claude Code will prompt to approve MCP servers on first use:
+   - GitHub MCP (search repos, manage issues/PRs)
+   - npm MCP (search packages, manage dependencies)
+
+No additional setup needed beyond that.
 
 ## Project structure
 

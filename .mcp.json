@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "/opt/homebrew/bin/mcp-server-github"
+    }
+  }
+}
