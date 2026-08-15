@@ -1,0 +1,30 @@
+{
+  "name": "next-render-strategy",
+  "version": "0.1.0",
+  "description": "Interactive CLI advisor for Next.js App Router render strategies",
+  "type": "module",
+  "bin": {
+    "next-render-strategy": "./dist/cli.js",
+    "nrs": "./dist/cli.js"
+  },
+  "main": "./dist/cli.js",
+  "files": ["dist", "README.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "@next-render-strategy/core": "workspace:*",
+    "commander": "^11.0.0"
+  },
+  "keywords": ["nextjs", "render-strategy", "cli", "wizard"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/habbababbai/next-render-advisor"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
