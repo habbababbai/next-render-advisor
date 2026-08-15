@@ -40,8 +40,4 @@ lerna-debug.log*
 tmp/
 
 # Local claude and obsidian files
-.claude
 .obsidian
-
-# Local project instructions 
-CLAUDE.md
