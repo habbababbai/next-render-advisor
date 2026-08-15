@@ -13,6 +13,7 @@ reviews:
 
   auto_review:
     enabled: true
+    auto_incremental_review: false   # only auto-review on PR open; later pushes need "@coderabbitai review"
     drafts: false          # skip draft PRs until marked ready
     base_branches:
       - main
