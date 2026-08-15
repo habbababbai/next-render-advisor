@@ -30,7 +30,16 @@ export default [
         'error',
         {
           patterns: [
-            'fs', 'fs/*', 'path', 'http', 'https', 'net', 'child_process',
+            // Both bare and node:-prefixed forms — no-restricted-imports
+            // matches specifiers literally, so 'fs' alone doesn't catch
+            // 'node:fs'.
+            'fs', 'fs/*', 'node:fs', 'node:fs/*',
+            'path', 'node:path',
+            'http', 'node:http',
+            'https', 'node:https',
+            'net', 'node:net',
+            'child_process', 'node:child_process',
+            'process', 'node:process',
             'next', 'next/*', 'react', 'react-dom', 'react/*', 'react-dom/*',
           ],
         },
