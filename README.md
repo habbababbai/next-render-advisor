@@ -24,7 +24,7 @@ Early and in active development. What's real today vs. planned:
 
 | Piece | Status |
 |---|---|
-| Classification core (`classifyComponent`, `classifyRoute`) | ✅ Implemented, 100% branch coverage — [`src/rules.ts`](./src/rules.ts) |
+| Classification core (`classifyComponent`, `classifyRoute`) | ✅ Implemented, 100% branch coverage — [`packages/core/src/rules.ts`](./packages/core/src/rules.ts) |
 | Interactive wizard (Normal / Dummy mode) | 🚧 Not yet implemented |
 | CLI (`nra` / `next-render-advisor`) | 🚧 Not yet implemented |
 | Repo scanner | 📋 Planned, Phase 2 |
@@ -58,7 +58,7 @@ pnpm test
 ```
 
 `pnpm test` runs `vitest run`; `pnpm test:coverage` runs `vitest run --coverage`. 
-`src/rules.ts` is held to 100% branch coverage.
+`packages/core/src/rules.ts` is held to 100% branch coverage.
 
 **Before contributing:** Read [CLAUDE.md](./CLAUDE.md) for project invariants,
 testing requirements, and working style.
@@ -100,20 +100,19 @@ needs its own token even if you're already logged in with `gh auth login`.
    ```
 
 3. Restart Claude Code (or open a new terminal) so it picks up the env var.
-   Claude Code will prompt to approve MCP servers on first use:
+   Claude Code will prompt to approve the MCP server on first use:
    - GitHub MCP (search repos, manage issues/PRs)
-   - npm MCP (search packages, manage dependencies)
 
 No additional setup needed beyond that.
 
 ## Project structure
 
 ```
-src/rules.ts         pure classification core — decision logic (done)
-test/rules.test.ts   100% branch coverage tests (done)
-src/wizard.ts        interactive Q&A wizard (planned)
-src/cli.ts           command-line interface (planned)
-src/scanner.ts       AST-based code audit (planned, Phase 2)
+packages/core/src/rules.ts        pure classification core — decision logic (done)
+packages/core/test/rules.test.ts  100% branch coverage tests (done)
+packages/cli/src/cli.ts           command-line interface (planned)
+wizard.ts                         interactive Q&A wizard (planned, package TBD)
+scanner.ts                        AST-based code audit (planned, Phase 2, package TBD)
 ```
 
 See [CLAUDE.md](./CLAUDE.md) for architecture details and invariants.

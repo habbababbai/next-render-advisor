@@ -1,5 +1,5 @@
 {
-  "name": "@next-render-strategy/core",
+  "name": "@next-render-advisor/core",
   "version": "0.1.0",
   "description": "Pure rules engine for Next.js render strategy classification",
   "type": "module",
@@ -14,8 +14,8 @@
   "files": ["dist", "README.md", "LICENSE"],
   "scripts": {
     "build": "tsup",
-    "test": "vitest",
-    "test:coverage": "vitest --coverage"
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": ["nextjs", "render-strategy", "server-client", "static-isr-dynamic"],
   "repository": {

@@ -1,3 +1,2 @@
-// Core rules engine
-// This file will export the classify() function and types once implemented
-export {};
+// Public API of the core rules engine
+export * from './rules';

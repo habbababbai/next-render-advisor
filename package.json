@@ -1,5 +1,5 @@
 {
-  "name": "next-render-strategy",
+  "name": "next-render-advisor",
   "version": "0.1.0",
   "description": "CLI that recommends Server vs Client Component and Static vs ISR vs Dynamic generation for Next.js App Router projects",
   "private": true,
@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "build": "pnpm -r build",
-    "dev": "pnpm -r --filter next-render-strategy dev",
+    "dev": "pnpm -r --filter next-render-advisor dev",
     "test": "pnpm -r test",
     "test:coverage": "pnpm -r test -- --coverage",
     "format": "prettier --write \"packages/*/src/**/*.ts\" \"packages/*/test/**/*.ts\"",
