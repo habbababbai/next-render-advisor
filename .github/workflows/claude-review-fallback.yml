@@ -25,11 +25,21 @@ jobs:
       contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
     runs-on: ubuntu-latest
     steps:
+      - name: Resolve PR head SHA
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const pull_number = context.payload.issue.number;
+            const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number });
+            core.setOutput('head_sha', pr.head.sha);
+
       # issue_comment checks out the default branch by default, so ask for the
       # PR head explicitly or Claude reviews the wrong tree.
       - uses: actions/checkout@v7
         with:
-          ref: refs/pull/${{ github.event.issue.number }}/head
+          ref: ${{ steps.pr.outputs.head_sha }}
           fetch-depth: 0
 
       - uses: anthropics/claude-code-action@v1
