@@ -39,6 +39,7 @@ jobs:
 
       - uses: anthropics/claude-code-action@v1
         id: claude
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -99,9 +100,9 @@ jobs:
           set -u
           pr=${{ inputs.pr_number }}
           file=/tmp/claude-review-verdict.json
-          fallback_body="Automated review did not produce a valid verdict (conclusion: ${{ steps.claude.outputs.conclusion }}); defaulting to request changes. See the workflow run for details."
+          fallback_body="Automated review did not produce a valid verdict (outcome: ${{ steps.claude.outcome }}); defaulting to request changes. See the workflow run for details."
 
-          if [ "${{ steps.claude.outputs.conclusion }}" != "success" ] || [ ! -f "$file" ]; then
+          if [ "${{ steps.claude.outcome }}" != "success" ] || [ ! -f "$file" ]; then
             gh pr review "$pr" --request-changes --body "$fallback_body"
             exit 0
           fi
