@@ -60,8 +60,9 @@ pnpm test
 `pnpm test` runs `vitest run`; `pnpm test:coverage` runs `vitest run --coverage`. 
 `packages/core/src/rules.ts` is held to 100% branch coverage.
 
-**Before contributing:** Read [CLAUDE.md](./CLAUDE.md) for project invariants,
-testing requirements, and working style.
+**Before contributing:** Read [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) for
+the workflow and branch protection rules, and [CLAUDE.md](./CLAUDE.md) for
+project invariants, testing requirements, and working style.
 
 ### Claude Code Setup (Optional)
 
