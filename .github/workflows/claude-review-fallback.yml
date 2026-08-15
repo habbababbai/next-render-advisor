@@ -15,9 +15,14 @@ permissions:
 jobs:
   review:
     name: review
+    # Restricted to trusted commenters: issue_comment runs with repo secrets
+    # available regardless of who's commenting, and this step checks out the
+    # commenter's own PR head — an open author_association gate here would let
+    # a fork PR exfiltrate secrets via a privileged checkout of untrusted code.
     if: >
       github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/claude-review')
+      startsWith(github.event.comment.body, '/claude-review') &&
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)
     runs-on: ubuntu-latest
     steps:
       # issue_comment checks out the default branch by default, so ask for the
