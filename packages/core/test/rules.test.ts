@@ -133,6 +133,11 @@ describe('classifyRoute', () => {
     expect(verdict.reasons[0]).toMatch(/useSearchParams/);
   });
 
+  it('makes clear the unsuspended searchParams case breaks the build, not just a per-request render choice', () => {
+    const verdict = classifyRoute({ ...routeClean, hasUnsuspendedClientSearchParams: 'yes' });
+    expect(verdict.reasons[0]).toMatch(/next build/);
+  });
+
   const routeBlockers: Array<'readsRequestTimeDataOnServer' | 'hasUnsuspendedClientSearchParams'> = [
     'readsRequestTimeDataOnServer',
     'hasUnsuspendedClientSearchParams',
@@ -176,6 +181,24 @@ describe('classifyRoute', () => {
     expect(verdict.generation).toBe('isr');
     expect(verdict.confidence).toBe('medium');
   });
+
+  const unusableRevalidateSeconds = [0, -1, NaN, Infinity, -Infinity, 1.5];
+
+  it.each(unusableRevalidateSeconds)(
+    'is ISR, medium confidence, with the generic prompt (not a snippet) when revalidateSeconds is %p',
+    (revalidateSeconds) => {
+      const verdict = classifyRoute({
+        ...routeClean,
+        dataChangeFrequency: 'periodically',
+        revalidateSeconds,
+      });
+      expect(verdict.generation).toBe('isr');
+      expect(verdict.confidence).toBe('medium');
+      expect(verdict.suggestions).toEqual([
+        'Pick a revalidate interval (in seconds) matching how often the data actually changes.',
+      ]);
+    },
+  );
 
   it('is dynamic, high confidence, when data changes every request', () => {
     const verdict = classifyRoute({ ...routeClean, dataChangeFrequency: 'every-request' });

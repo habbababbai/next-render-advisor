@@ -217,10 +217,10 @@ export function classifyRoute(signals: RouteSignals): RouteVerdict {
       generation: 'dynamic',
       confidence: 'high',
       reasons: [
-        'A Client Component calls useSearchParams() without an ancestor <Suspense> boundary — this specifically opts the route out of static rendering, even though the rest of the tree may be static-eligible.',
+        "A Client Component calls useSearchParams() without an ancestor <Suspense> boundary. Left unfixed this fails `next build` (missing-suspense-with-csr-bailout) — it isn't a safe 'render this per request' choice like the other dynamic cases, the build breaks until it's fixed.",
       ],
       suggestions: [
-        'Wrap the component that calls useSearchParams() in a <Suspense> boundary to restore static eligibility for the rest of the route.',
+        'Wrap the component that calls useSearchParams() in a <Suspense> boundary — required to avoid the build failure, and restores static eligibility for the rest of the route.',
       ],
     };
   }
@@ -276,13 +276,19 @@ function classifyByDataFreshness(signals: RouteSignals): RouteVerdict {
 
     case 'periodically': {
       const seconds = signals.revalidateSeconds;
+      // Next.js's `revalidate` route config only accepts a finite, positive
+      // integer number of seconds — 0 means "always dynamic" and negative /
+      // non-finite values are build errors. Truthiness alone (the previous
+      // check) lets -1, Infinity, and -Infinity through as if valid.
+      const hasUsableInterval =
+        seconds !== undefined && Number.isInteger(seconds) && seconds > 0;
       return {
         generation: 'isr',
-        confidence: seconds ? 'high' : 'medium',
+        confidence: hasUsableInterval ? 'high' : 'medium',
         reasons: [
           'No request-time data access, but the underlying data changes periodically — ISR is cheaper than full dynamic rendering and fresher than pure static.',
         ],
-        suggestions: seconds
+        suggestions: hasUsableInterval
           ? [`export const revalidate = ${seconds};`]
           : ['Pick a revalidate interval (in seconds) matching how often the data actually changes.'],
       };
