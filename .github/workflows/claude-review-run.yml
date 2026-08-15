@@ -48,6 +48,14 @@ jobs:
           # authenticates the `gh` calls Claude makes via the Bash tool.
           github_token: ${{ secrets.GITHUB_TOKEN }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # This workflow is only ever invoked by claude-review-fallback.yml's
+          # `gh workflow run`, which authenticates as the github-actions[bot]
+          # identity — so the actor here is always that bot, never a human.
+          # The action refuses non-human actors by default (anti-loop guard);
+          # allow-listing this one specific bot is safe because the real
+          # authorization check already happened upstream, in the dispatcher's
+          # author_association gate (OWNER/MEMBER/COLLABORATOR-only commenters).
+          allowed_bots: github-actions
           claude_args: |
             --max-turns 25
             --model claude-sonnet-5
