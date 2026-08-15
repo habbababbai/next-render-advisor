@@ -6,7 +6,12 @@ reviews:
   # is addressed (fixed in a later commit, or you reply/discuss it away) AND
   # all required checks (CI) are green, CodeRabbit submits its own Approve
   # review automatically. No manual "@coderabbitai approve" needed.
+  # request_changes_workflow alone only gates the *workflow state* (blocks
+  # merge on protected branches until its own comments are resolved) — it
+  # does NOT by itself submit the approval. auto_approve is what actually
+  # makes CodeRabbit post an Approve review once nothing's outstanding.
   request_changes_workflow: true
+  auto_approve: true
 
   auto_review:
     enabled: true
@@ -40,7 +45,10 @@ reviews:
         the other's input type. Signal ('yes' | 'no' | 'unknown') must never be
         coerced to boolean or treated as falsy. Uncertainty defaults are
         intentional: unresolved component -> 'client', unresolved route ->
-        'dynamic' — don't suggest "fixing" these to be symmetric.
+        'dynamic' — don't suggest "fixing" these to be symmetric. Any change
+        here requires accompanying tests in packages/core/test/rules.test.ts
+        with 100% branch coverage, including 'unknown' Signal cases — flag
+        the PR if it touches this file without matching test changes.
 
     - path: "packages/core/test/rules.test.ts"
       instructions: >
