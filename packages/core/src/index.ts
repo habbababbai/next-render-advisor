@@ -1,2 +1,9 @@
- // TODO: Export from './rules' once implemented.
- export {};
+export type {
+  Signal,
+  Confidence,
+  ComponentSignals,
+  ComponentVerdict,
+  RouteSignals,
+  RouteVerdict,
+} from './rules';
+export { classifyComponent, classifyRoute } from './rules';
