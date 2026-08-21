@@ -43,3 +43,6 @@ tmp/
 
 # Local claude and obsidian files
 .obsidian
+
+# Graphify
+graphify-out/
